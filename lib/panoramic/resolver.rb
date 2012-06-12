@@ -2,6 +2,12 @@ module Panoramic
   class Resolver < ActionView::Resolver
     require "singleton"
     include Singleton
+    
+    attr_accessible :client
+    
+    def initialize client
+      @client = client
+    end
 
     # this method is mandatory to implement a Resolver
     def find_templates(name, prefix, partial, details)
@@ -10,7 +16,8 @@ module Panoramic
         :locale  => normalize_array(details[:locale]).first,
         :format  => normalize_array(details[:formats]).first,
         :handler => normalize_array(details[:handlers]),
-        :partial => partial || false
+        :partial => partial || false,
+        :client_id => self.client,
       }
 
       @@model.find_model_templates(conditions).map do |record|
